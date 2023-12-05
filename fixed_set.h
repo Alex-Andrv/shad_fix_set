@@ -1,8 +1,8 @@
-#include <iostream>
 #include <vector>
 #include <functional>
 #include <random>
 #include <cassert>
+#include <optional>
 
 class BadHashFunctionException : public std::exception {
 public:
@@ -14,7 +14,7 @@ public:
 class HashFunction {
 public:
     virtual size_t GetHash(int value) const = 0;
-    virtual ~HashFunction() {}
+    // virtual ~HashFunction() {}
 };
 
 class LinearHashFunction : public HashFunction {
@@ -24,7 +24,7 @@ public:
     static const size_t kPrime = 1000000021;
     LinearHashFunction(int coefficien, int bias) : m_coefficien(coefficien), m_bias(bias) {}
 
-    ~LinearHashFunction() override = default;
+    // ~LinearHashFunction() override = default;
 
     size_t GetHash(int value) const override {
         return static_cast<size_t>((1LL * value * m_coefficien + m_bias) % kPrime);
@@ -97,9 +97,9 @@ private:
         explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator) {
         }
 
-        ~InnerSet() {
-            delete m_hash;
-        }
+        // ~InnerSet() {
+        //     delete m_hash;
+        // }
 
         static std::vector<std::optional<int>> Split(
             const std::vector<int>&numbers,
@@ -148,7 +148,7 @@ private:
         const std::vector<std::vector<int>>&buckets) {
         std::vector<InnerSet*> data;
         for (const auto&bucket: buckets) {
-            InnerSet* inner_set = new InnerSet(&generator);
+            auto* inner_set = new InnerSet(&generator);
             inner_set->Initialize(bucket);
             data.push_back(inner_set);
         }
@@ -164,14 +164,14 @@ public:
     FixedSet(): generator(GenerateLinearHashFunction()) {
     }
 
-    ~FixedSet() {
-        delete m_hash;
-
-        std::for_each(m_data.begin(), m_data.end(), [](InnerSet* inner_set_ptr) {
-            delete inner_set_ptr;
-        });
-        m_data.clear();
-    }
+    // ~FixedSet() {
+    //     delete m_hash;
+    //
+    //     std::for_each(m_data.begin(), m_data.end(), [](InnerSet* inner_set_ptr) {
+    //         delete inner_set_ptr;
+    //     });
+    //     m_data.clear();
+    // }
 
     void Initialize(const std::vector<int>&numbers) {
         size_t cnt_number = numbers.size();
