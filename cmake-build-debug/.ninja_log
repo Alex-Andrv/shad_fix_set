@@ -1,0 +1,8 @@
+# ninja log v5
+0	48	1701738301405276655	build.ninja	87df3bc743c53b2
+7	490	1700490576162381588	CMakeFiles/shad_fix_set.dir/main.cpp.o	d49d599d30a2d5ee
+7	734	1701736565526719421	CMakeFiles/shad_fix_set.dir/run_fixed_set.cpp.o	942bb6a2c4c055b1
+3	627	1700518318913457304	CMakeFiles/shad_fix_set.dir/fuck_codestyle.cpp.o	d33692e0045a690d
+735	789	1701736565582095497	shad_fix_set	e0eabe892fe25641
+0	454	1700490614130984947	CMakeFiles/shad_fix_set.dir/trivial_main.cpp.o	3c25f1c365dfdf66
+0	46	1701738301405276655	build.ninja	87df3bc743c53b2

@@ -1,0 +1,4 @@
+"/Users/aandreev/Applications/CLion Nova.app/Contents/bin/cmake/mac/aarch64/bin/cmake" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=/Users/aandreev/Applications/CLion Nova.app/Contents/bin/ninja/mac/aarch64/ninja" -G Ninja -S /Users/aandreev/CLionProjects/shad_fix_set -B /Users/aandreev/CLionProjects/shad_fix_set/cmake-build-debug
+-- Configuring done (0.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/aandreev/CLionProjects/shad_fix_set/cmake-build-debug
