@@ -93,12 +93,23 @@ private:
     class InnerSet {
     public:
         GenerateLinearHashFunction* generator;
+        HashFunction* m_hash;
+        std::vector<std::optional<int>> m_data;
+        size_t m_cnt_buckets;
 
         explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator),  m_hash(nullptr) {
         }
 
         ~InnerSet() {
             delete m_hash;
+        }
+
+        InnerSet(InnerSet&& other) noexcept
+            : generator(other.generator), m_hash(other.m_hash),
+              m_data(std::move(other.m_data)), m_cnt_buckets(other.m_cnt_buckets) {
+            other.generator = nullptr;
+            other.m_hash = nullptr;
+            other.m_cnt_buckets = 0;
         }
 
         static std::vector<std::optional<int>> Split(
@@ -112,10 +123,6 @@ private:
             }
             return buckets;
         }
-
-        HashFunction* m_hash;
-        std::vector<std::optional<int>> m_data;
-        size_t m_cnt_buckets;
 
         void Initialize(const std::vector<int>&numbers) {
             delete m_hash;
@@ -149,9 +156,11 @@ private:
         const std::vector<std::vector<int>>&buckets) {
         std::vector<InnerSet> data;
         for (const auto&bucket: buckets) {
-            InnerSet inner_set(&generator);
-            inner_set.Initialize(bucket);
-            data.push_back(inner_set);
+            //InnerSet inner_set(&generator);
+            //inner_set.Initialize(bucket);
+            //data.push_back(std::move(inner_set));
+            data.emplace_back(&generator);
+            data.back().Initialize(bucket);
         }
         return data;
     }
