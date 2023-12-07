@@ -3,13 +3,18 @@
 #include <random>
 #include <cassert>
 #include <optional>
+#include <string>
 
-//class BadHashFunctionException : public std::exception {
-//public:
-  //  const char* wghat() const noexcept override {
-    //    return "Bad hash function";
-    //}
-//};
+
+class BadHashFunctionException : public std::exception {
+public:
+    std::string errorMessage;
+    explicit BadHashFunctionException(const std::string& message) : errorMessage(message) {}
+
+    const char* what() const noexcept override {
+        return errorMessage.c_str();
+    }
+};
 
 class HashFunction {
 public:
@@ -75,7 +80,7 @@ private:
                 return hash;
             }
         }
-        throw std::runtime_error("Something Bad happened here");
+        throw BadHashFunctionException("Bad hash function");
     }
 
     static std::vector<std::vector<int>> Split(
@@ -97,8 +102,8 @@ private:
         std::vector<std::optional<int>> m_data;
         size_t m_cnt_buckets;
 
-        explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator),  m_hash(nullptr) {
-        }
+        explicit InnerSet(GenerateLinearHashFunction* generator) :
+            generator(generator),  m_hash(nullptr) {}
 
         ~InnerSet() {
             delete m_hash;
@@ -156,9 +161,6 @@ private:
         const std::vector<std::vector<int>>&buckets) {
         std::vector<InnerSet> data;
         for (const auto&bucket: buckets) {
-            //InnerSet inner_set(&generator);
-            //inner_set.Initialize(bucket);
-            //data.push_back(std::move(inner_set));
             data.emplace_back(&generator);
             data.back().Initialize(bucket);
         }
@@ -171,7 +173,7 @@ public:
     size_t m_cnt_buckets;
     GenerateLinearHashFunction generator;
 
-    FixedSet(): generator(GenerateLinearHashFunction()), m_hash(nullptr) {
+    FixedSet(): m_hash(nullptr), m_cnt_buckets(0), generator(GenerateLinearHashFunction())  {
     }
 
     ~FixedSet() {
