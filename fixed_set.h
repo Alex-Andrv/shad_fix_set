@@ -6,8 +6,9 @@
 
 class BadHashFunctionException : public std::exception {
 public:
+    const std::string message =  "Bad hash function";
     const char* what() const noexcept override {
-        return "Bad hash function";
+        return message;
     }
 };
 
