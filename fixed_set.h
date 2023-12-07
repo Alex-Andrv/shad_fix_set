@@ -114,11 +114,12 @@ private:
             return buckets;
         }
 
-        LinearHashFunction* m_hash=std::nullptr;
+        LinearHashFunction* m_hash=nullptr;
         std::vector<std::optional<int>> m_data;
         size_t m_cnt_buckets;
 
         void Initialize(const std::vector<int>&numbers) {
+
             size_t cnt_number = numbers.size();
             m_cnt_buckets = cnt_number * cnt_number + 1;
             assert(m_cnt_buckets != 0);
@@ -175,6 +176,11 @@ public:
     }
 
     void Initialize(const std::vector<int>&numbers) {
+
+        std::for_each(m_data.begin(), m_data.end(), [](InnerSet* inner_set_ptr) {
+            delete inner_set_ptr;
+        });
+
         size_t cnt_number = numbers.size();
         m_cnt_buckets = cnt_number + 1;
         assert(m_cnt_buckets != 0);
