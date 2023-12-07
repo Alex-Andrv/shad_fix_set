@@ -94,7 +94,7 @@ private:
     public:
         GenerateLinearHashFunction* generator;
 
-        explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator) {
+        explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator),  m_hash(nullptr) {
         }
 
         static std::vector<std::optional<int>> Split(
@@ -114,6 +114,7 @@ private:
         size_t m_cnt_buckets;
 
         void Initialize(const std::vector<int>&numbers) {
+            delete m_hash;
             size_t cnt_number = numbers.size();
             m_cnt_buckets = cnt_number * cnt_number + 1;
             assert(m_cnt_buckets != 0);
@@ -127,7 +128,6 @@ private:
                 numbers,
                 m_hash,
                 m_cnt_buckets);
-            delete m_hash;
         }
 
         bool Contains(int number) const {
@@ -158,10 +158,11 @@ public:
     size_t m_cnt_buckets;
     GenerateLinearHashFunction generator;
 
-    FixedSet(): generator(GenerateLinearHashFunction()) {
+    FixedSet(): generator(GenerateLinearHashFunction()), m_hash(nullptr) {
     }
 
     void Initialize(const std::vector<int>&numbers) {
+        delete m_hash;
         size_t cnt_number = numbers.size();
         m_cnt_buckets = cnt_number + 1;
         assert(m_cnt_buckets != 0);
@@ -178,7 +179,6 @@ public:
             m_hash,
             m_cnt_buckets);
         m_data = InitBuckets(buckets);
-        delete m_hash;
     }
 
     bool Contains(int number) const {
