@@ -63,7 +63,7 @@ private:
         while (cnt_run < 10) {
             cnt_run++;
             std::vector<int> lens(cnt_buckets, 0);
-            auto hash = generator->Generate();
+            auto* hash = generator->Generate();
             for (int v: numbers) {
                 lens[hash->GetHash(v) % cnt_buckets] += 1;
             }
@@ -74,6 +74,7 @@ private:
             if (hu <= criteria) {
                 return hash;
             }
+            delete hash;
         }
         throw std::runtime_error("Something Bad happened here");
     }
