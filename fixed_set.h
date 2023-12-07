@@ -43,7 +43,7 @@ public:
 
     GenerateLinearHashFunction() : gen(std::random_device()()) {}
 
-    LinearHashFunction* Generate() override {
+    HashFunction* Generate() override {
         std::uniform_int_distribution<int> distribution(1, kPrime);
         int coefficien = distribution(gen) % (kPrime - 1) + 1;
         int bias = distribution(gen) % kPrime;
@@ -54,7 +54,7 @@ public:
 
 class FixedSet {
 private:
-    static LinearHashFunction* GetHashFunction(size_t cnt_buckets,
+    static HashFunction* GetHashFunction(size_t cnt_buckets,
                                          const std::vector<int>&numbers,
                                          std::function<size_t(int)> fun,
                                          int criteria,
@@ -74,14 +74,13 @@ private:
             if (hu <= criteria) {
                 return hash;
             }
-            delete hash;
         }
         throw std::runtime_error("Something Bad happened here");
     }
 
     static std::vector<std::vector<int>> Split(
         const std::vector<int>&numbers,
-        LinearHashFunction* hash,
+        HashFunction* hash,
         size_t cnt_buckets) {
         std::vector<std::vector<int>> buckets(cnt_buckets, std::vector<int>());
         for (int v: numbers) {
@@ -98,13 +97,9 @@ private:
         explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator) {
         }
 
-        ~InnerSet() {
-             delete m_hash;
-        }
-
         static std::vector<std::optional<int>> Split(
             const std::vector<int>&numbers,
-            LinearHashFunction* hash,
+            HashFunction* hash,
             size_t cnt_buckets) {
             std::vector<std::optional<int>> buckets(cnt_buckets);
             for (int v: numbers) {
@@ -114,12 +109,11 @@ private:
             return buckets;
         }
 
-        LinearHashFunction* m_hash=nullptr;
+        HashFunction* m_hash;
         std::vector<std::optional<int>> m_data;
         size_t m_cnt_buckets;
 
         void Initialize(const std::vector<int>&numbers) {
-
             size_t cnt_number = numbers.size();
             m_cnt_buckets = cnt_number * cnt_number + 1;
             assert(m_cnt_buckets != 0);
@@ -133,6 +127,7 @@ private:
                 numbers,
                 m_hash,
                 m_cnt_buckets);
+            delete m_hash;
         }
 
         bool Contains(int number) const {
@@ -146,41 +141,27 @@ private:
         }
     };
 
-    std::vector<InnerSet*> InitBuckets(
+    std::vector<InnerSet> InitBuckets(
         const std::vector<std::vector<int>>&buckets) {
-        std::vector<InnerSet*> data;
+        std::vector<InnerSet> data;
         for (const auto&bucket: buckets) {
-            auto* inner_set = new InnerSet(&generator);
-            inner_set->Initialize(bucket);
+            InnerSet inner_set(&generator);
+            inner_set.Initialize(bucket);
             data.push_back(inner_set);
         }
         return data;
     }
 
 public:
-    LinearHashFunction* m_hash;
-    std::vector<InnerSet*> m_data;
+    HashFunction* m_hash;
+    std::vector<InnerSet> m_data;
     size_t m_cnt_buckets;
     GenerateLinearHashFunction generator;
 
     FixedSet(): generator(GenerateLinearHashFunction()) {
     }
 
-    ~FixedSet() {
-         delete m_hash;
-
-         std::for_each(m_data.begin(), m_data.end(), [](InnerSet* inner_set_ptr) {
-             delete inner_set_ptr;
-         });
-         m_data.clear();
-    }
-
     void Initialize(const std::vector<int>&numbers) {
-
-        std::for_each(m_data.begin(), m_data.end(), [](InnerSet* inner_set_ptr) {
-            delete inner_set_ptr;
-        });
-
         size_t cnt_number = numbers.size();
         m_cnt_buckets = cnt_number + 1;
         assert(m_cnt_buckets != 0);
@@ -197,11 +178,12 @@ public:
             m_hash,
             m_cnt_buckets);
         m_data = InitBuckets(buckets);
+        delete m_hash;
     }
 
     bool Contains(int number) const {
         assert(m_cnt_buckets != 0);
         size_t first = m_hash->GetHash(number) % m_cnt_buckets;
-        return m_data[first]->Contains(number);
+        return m_data[first].Contains(number);
     }
 };
