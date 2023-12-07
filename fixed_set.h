@@ -97,6 +97,10 @@ private:
         explicit InnerSet(GenerateLinearHashFunction* generator) : generator(generator),  m_hash(nullptr) {
         }
 
+        ~InnerSet() {
+            delete m_hash;
+        }
+
         static std::vector<std::optional<int>> Split(
             const std::vector<int>&numbers,
             HashFunction* hash,
@@ -159,6 +163,10 @@ public:
     GenerateLinearHashFunction generator;
 
     FixedSet(): generator(GenerateLinearHashFunction()), m_hash(nullptr) {
+    }
+
+    ~FixedSet() {
+        delete m_hash;
     }
 
     void Initialize(const std::vector<int>&numbers) {
