@@ -4,13 +4,12 @@
 #include <cassert>
 #include <optional>
 
-class BadHashFunctionException : public std::exception {
-public:
-    std::string message =  "Bad hash function";
-    const char* what() const noexcept override {
-        return message;
-    }
-};
+//class BadHashFunctionException : public std::exception {
+//public:
+  //  const char* wghat() const noexcept override {
+    //    return "Bad hash function";
+    //}
+//};
 
 class HashFunction {
 public:
@@ -76,7 +75,7 @@ private:
                 return hash;
             }
         }
-        throw BadHashFunctionException();
+        throw std::runtime_error("Something Bad happened here");
     }
 
     static std::vector<std::vector<int>> Split(
