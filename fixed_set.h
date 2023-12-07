@@ -114,7 +114,7 @@ private:
             return buckets;
         }
 
-        LinearHashFunction* m_hash;
+        LinearHashFunction* m_hash=std::nullptr;
         std::vector<std::optional<int>> m_data;
         size_t m_cnt_buckets;
 
