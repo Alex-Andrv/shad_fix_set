@@ -182,6 +182,7 @@ public:
 
     void Initialize(const std::vector<int>&numbers) {
         delete m_hash;
+        m_data.clear();
         size_t cnt_number = numbers.size();
         m_cnt_buckets = cnt_number + 1;
         assert(m_cnt_buckets != 0);
